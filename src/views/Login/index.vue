@@ -6,6 +6,35 @@
         <li :class="{'current':item.current}" v-for="item in menuTab" :key="item.id" @click="toggleMneu(item)">{{item.txt}} </li>
         
       </ul>
+      <!-- 表单 start -->
+     <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" class="login-form" size="medium">
+      <el-form-item prop="username" class="item-from"> 
+        <label>邮箱</label>
+        <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item  prop="password" class="item-from">
+        <label>密码</label>
+        <el-input type="password" v-model="ruleForm.password" autocomplete="off" minlength="6" maxlength="20"></el-input>
+      </el-form-item>
+      <el-form-item  prop="code" class="item-from">
+        <label>验证码</label>
+        <el-row :gutter="10">
+
+          <el-col :span="15">
+            <el-input v-model.number="ruleForm.code" minlength="6" maxlength="6"></el-input>
+          </el-col>
+          <el-col :span="9">
+            <el-button type="success" class="block">获取验证码</el-button>
+          </el-col>
+       
+        </el-row>
+         
+      </el-form-item>
+      <el-form-item>
+        <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn block">登陆</el-button>
+      
+    </el-form-item>
+</el-form>
     </div>
   </div>
 </template>
@@ -13,6 +42,46 @@
   export default{
     name: "login",
     data () {
+      
+      //验证用户名
+      var validateUsername = (rule, value, callback) => {
+        let reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+        if (value === '') {
+
+          callback(new Error('请输入用户名'));
+        } else if(!reg.test(value)){
+          callback(new Error('用户名格式有误'))
+
+        }else {
+          callback();
+        }
+      };
+      //验证密码
+      var validatePassword = (rule, value, callback) => {
+        let reg = /^(?!\D+$)(?![^a-zA-Z]+$)\S{6,20}$/;
+        if (value === '') {
+
+          callback(new Error('请输入密码'));
+        } else if(!reg.test(value)){
+          callback(new Error('密码为6至20位的数字+字母'))
+
+        }else {
+          callback();
+        }
+      };
+      //验证验证码
+      var checkAge = (rule, value, callback) => {
+         let reg = /^[a-z0-9]{6}$/
+        if (value === '') {
+
+          callback(new Error('请输入验证码'));
+        } else if(!reg.test(value)){
+          callback(new Error('验证码格式有误'))
+
+        }else {
+          callback();
+        }
+      };
       return {
        menuTab: [
          {
@@ -24,7 +93,24 @@
           current: false
           }
        ],
-       isActive: true
+       isActive: true,
+       ruleForm: {
+          username: '',
+          password: '',
+          code: ''
+        },
+        rules: {
+          username: [
+            { validator: validateUsername, trigger: 'blur' }
+          ],
+          password: [
+            { validator: validatePassword, trigger: 'blur' }
+          ],
+          code: [
+            { validator: checkAge, trigger: 'blur' }
+          ]
+        }
+      
       }
     },
     created () {
@@ -41,7 +127,19 @@
            elem.current = false
          })
         data.current = true
+      },
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
+      
+
       
     }
   }
@@ -53,7 +151,7 @@
   background-color: #344a5f;
 }
 .login-wrap {
-  height: 330px;
+  width: 330px;
   margin: auto;
 }
 .menu-tab {
@@ -70,6 +168,22 @@
   .current {
     background-color: rgba(0, 0, 0, .1);
   }
+}
+.login-form {
+  margin-top: 29px;
+  label {
+    text-align: left ;
+    display: block;
+    margin-bottom: 3px;
+    font-size: 14px;
+    color: #fff;
+  }
+  .item-from { margin-bottom: 13px; }
+  .block {
+    display: block;
+    width: 100%;
+  }
+  .login-btn { margin-top: 19px; }
 }
 </style>
 <!--
