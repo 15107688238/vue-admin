@@ -48,10 +48,10 @@
   import { stripscript, validateEmail, validatePass, validateCode } from '@/utils/validate'
   export default{
     name: "login",
-    setup(props, context) {
+    setup(props, {refs}) {
 
       //验证用户名
-      var validateUsername = (rule, value, callback) => {
+      let validateUsername = (rule, value, callback) => {
         
         if (value === '') {
 
@@ -64,9 +64,9 @@
         }
       };
       //验证密码
-      var validatePassword = (rule, value, callback) => {
-        this.ruleForm.password = stripscript(value)
-        value = this.ruleForm.password
+      let validatePassword = (rule, value, callback) => {
+        ruleForm.password = stripscript(value)
+        value = ruleForm.password
         
         if (value === '') {
 
@@ -79,16 +79,16 @@
         }
       };
       //重复密码
-      var validatePasswords = (rule, value, callback) => {
+      let validatePasswords = (rule, value, callback) => {
         //如果模块值为login，直接通过
-        if(this.model ==  "login"){ callback(); }
-        this.ruleForm.passwords = stripscript(value)
-        value = this.ruleForm.passwords
+        if(model.value ==  "login"){ callback(); }
+        ruleForm.passwords = stripscript(value)
+        value = ruleForm.passwords
         
         if (value === '') {
 
           callback(new Error('请再次输入密码'));
-        } else if( value != this.ruleForm.password){
+        } else if( value != ruleForm.password){
           callback(new Error('重复密码不正确'))
 
         }else {
@@ -98,8 +98,8 @@
       //验证验证码
       var checkAge = (rule, value, callback) => {
         // console.log(value)
-        this.ruleForm.code = stripscript(value)
-        value = this.ruleForm.code
+        ruleForm.code = stripscript(value)
+        value = ruleForm.code
          
         if (value === '') {
 
@@ -162,7 +162,7 @@
          })
 
           const submitForm = (formName =>{
-             context.refs[formName].validate((valid) => {
+            refs[formName].validate((valid) => {
           if (valid) {
             alert('submit!');
           } else {
