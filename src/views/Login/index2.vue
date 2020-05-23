@@ -44,12 +44,11 @@
   </div>
 </template>
 <script>
-  import {reactive, ref} from '@vue/composition-api'
   import { stripscript, validateEmail, validatePass, validateCode } from '@/utils/validate'
   export default{
     name: "login",
-    setup(props, context) {
-
+    data () {
+      
       //验证用户名
       var validateUsername = (rule, value, callback) => {
         
@@ -111,8 +110,8 @@
           callback();
         }
       };
-      //数据
-      const menuTab = reactive([
+      return {
+       menuTab: [
          {
           txt: '登陆',
           current: true,
@@ -123,18 +122,17 @@
           current: false,
           type: 'register'
           }
-       ])
+       ],
        //模块的值
-       const model = ref('login')
-
-       const ruleForm = reactive ({
+       model: 'login',
+       isActive: true,
+       ruleForm: {
           username: '',
           password: '',
           passwords: '',
           code: ''
-        })
-
-        const rules = reactive({
+        },
+        rules: {
           username: [
             { validator: validateUsername, trigger: 'blur' }
           ],
@@ -147,43 +145,7 @@
           code: [
             { validator: checkAge, trigger: 'blur' }
           ]
-        })
-
-        //声明函数
-
-         const toggleMneu = (data => {
-          menuTab.forEach(elem => {
-           elem.current = false
-           
-         })
-         //高光
-        data.current = true
-        model.value = data.type
-         })
-
-          const submitForm = (formName =>{
-             context.refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-            });
-          }) 
-      
-
-      return{menuTab, ruleForm,rules, model,toggleMneu,submitForm}
-    },
-    data () {
-      
-      
-      return {
-       
-       
-      //  isActive: true,
-       
-        
+        }
       
       }
     },
@@ -196,7 +158,25 @@
     },
     methods: {
       //vue数据驱动视图渲染
-     
+      toggleMneu(data){
+         this.menuTab.forEach(elem => {
+           elem.current = false
+           
+         })
+         //高光
+        data.current = true
+        this.model = data.type
+      },
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      }
       
 
       
