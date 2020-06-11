@@ -162,6 +162,8 @@
          })
 
           const submitForm = (formName =>{
+
+            alert('11')
             refs[formName].validate((valid) => {
           if (valid) {
             alert('submit!');
